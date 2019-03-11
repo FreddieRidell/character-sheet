@@ -1,0 +1,47 @@
+{
+  "name": "character-sheet",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "NODE_ENV=test jest --coverage true src test",
+    "test_watch": "NODE_ENV=test jest src test --watch --bail --runInBand",
+    "build": "NODE_ENV=production babel src --out-dir lib",
+    "format": "prettier --write src/**/*",
+    "watch": "NODE_ENV=staging babel src --out-dir lib --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^10.0.1",
+    "babel-preset-freddie-ridell": "0.0.8",
+    "eslint": "^5.15.1",
+    "eslint-config-react-app": "^3.0.8",
+    "eslint-plugin-flowtype": "^3.4.2",
+    "eslint-plugin-import": "^2.16.0",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.12.4",
+    "jest-cli": "^24.4.0",
+    "parcel-bundler": "^1.12.0",
+    "prettier": "^1.16.4"
+  },
+  "babel": {
+    "presets": [
+      "freddie-ridell"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "files": [
+    "/index.js",
+    "/lib",
+    "/main.js"
+  ],
+  "prettier": {
+    "tabWidth": 4,
+    "trailingComma": "all",
+    "useTabs": true
+  }
+}
