@@ -1,67 +1,53 @@
+extern crate stdweb;
+
 use yew::services::storage::Area;
 use yew::services::{ConsoleService, StorageService};
 use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
 
-struct Character {
-    name: String,
-}
+mod styled;
 
-impl Character {
-    fn new() -> Character {
-        Character {
-            name: String::from("Mathius Splurtle")
-        }
-    }
-}
+use styled::StyleDefinition;
 
 struct App {
-    character: Character,
     console: ConsoleService,
     local_storage: StorageService,
+    header_style: StyleDefinition,
 }
 
-enum Msg {
-    DoIt,
-    ChangeName(yew::html::ChangeData),
-}
+enum Msg {}
 
 impl Component for App {
     type Message = Msg;
     type Properties = ();
 
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
+        let mut header_style = StyleDefinition::new();
+
+        header_style
+                .declare("background-color", "red")
+                .declare("margin", "0")
+                .declare("font-size", "2rem")
+                .declare("padding", "1rem");
+
         App {
-            character: Character::new(),
             console: ConsoleService::new(),
             local_storage: StorageService::new(Area::Local),
+            header_style,
         }
     }
 
-    fn update(&mut self, msg: Self::Message) -> ShouldRender {
-        match msg {
-            Msg::DoIt => {
-                self.console.log("hello dad");
-                // Update your model on events
-                true
-            },
-
-            Msg::ChangeName(html::ChangeData::Value(name)) => {
-                self.console.log(name.as_str());
-                self.character.name = name;
-
-                true
-            },
-            Msg::ChangeName(_) => false,
-        }
+    fn update(&mut self, _: Self::Message) -> ShouldRender {
+        false
     }
 }
 
 impl Renderable<App> for App {
     fn view(&self) -> Html<Self> {
+        let class = format!("{}", &self.header_style);
+
         html! {
             <>
-                <header>{ &self.character.name }</header>
-                <input onchange=|value| Msg::ChangeName(value), />
+                <header class=&class,>{ "foo" }</header>
             </>
         }
     }
