@@ -5,18 +5,29 @@ use yew::services::{ConsoleService, StorageService};
 use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
 
 use diesel_punk::style::Style;
+use diesel_punk::variable::Variable;
 
-mod styled; 
+mod styled;
 use styled::publish_style;
 
+const color_var: CssVar = CssVarDefinition::<String>::define("color", String::from("black"));
+const font_size_var: CssVar = CssVarDefinition::<u8>::define("font-size", 2)
+    .format(|x: u8| format!("{}px", x));
+
+const display_style: Style = Style::new("display-style")
+    .set("color", color_var)
+    .set("font-size", font_size_var)
+    .set("margin", "1rem")
+    .set("padding", "1rem");
+
 struct App {
+    color: CssVar<String>,
     console: ConsoleService,
-    header_style: Style,
-    i: u8,
+    font_size: CssVar<u8>,
 }
 
 enum Msg {
-Inc
+    Inc,
 }
 
 impl Component for App {
@@ -24,26 +35,20 @@ impl Component for App {
     type Properties = ();
 
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        let mut header_style = Style::new("header");
-        header_style
-                .set("background-color", "red")
-                .set("margin", "0")
-                .set("font-size", "2rem")
-                .set("padding", "1rem");
-
         App {
+            color: color_var::new(),
             console: ConsoleService::new(),
-            header_style,
-            i: 2,
+            font_size: font_size_var::new(),
         }
     }
 
     fn update(&mut self, msg: Self::Message) -> ShouldRender {
         match msg {
             Msg::Inc => {
-                self.i = self.i + 1;
-                if self.i > 5 { self.i = 2 };
-                self.header_style.set("font-size", format!("{}rem", self.i ));
+                self.font_size.wrapped = self.font_size.wrapped + 1;
+                if self.font_size.wrapped > 5 {
+                    self.font_size.wrapped = 2
+                };
 
                 true
             }
@@ -53,12 +58,13 @@ impl Component for App {
 
 impl Renderable<App> for App {
     fn view(&self) -> Html<Self> {
-        let class = publish_style(&self.header_style);
+        let class = format!("{}", display_style);
+        let rule_set = String::from("");
 
         html! {
-            <>
-                <header class=&class, onclick=|_| { Msg::Inc }, >{ "foo" }</header>
-            </>
+            <div style=&rule_set_id, >
+                <div class=&class, onclick=|_| { Msg::Inc }, > { "Here Is The Text" } </div>
+            </div>
         }
     }
 }
