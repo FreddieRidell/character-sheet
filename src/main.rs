@@ -4,50 +4,60 @@ use yew::services::storage::Area;
 use yew::services::{ConsoleService, StorageService};
 use yew::{html, Component, ComponentLink, Html, Renderable, ShouldRender};
 
-mod styled;
+use diesel_punk::style::Style;
 
-use styled::StyleDefinition;
+mod styled; 
+use styled::publish_style;
 
 struct App {
     console: ConsoleService,
-    local_storage: StorageService,
-    header_style: StyleDefinition,
+    header_style: Style,
+    i: u8,
 }
 
-enum Msg {}
+enum Msg {
+Inc
+}
 
 impl Component for App {
     type Message = Msg;
     type Properties = ();
 
     fn create(_: Self::Properties, _: ComponentLink<Self>) -> Self {
-        let mut header_style = StyleDefinition::new();
-
+        let mut header_style = Style::new("header");
         header_style
-                .declare("background-color", "red")
-                .declare("margin", "0")
-                .declare("font-size", "2rem")
-                .declare("padding", "1rem");
+                .set("background-color", "red")
+                .set("margin", "0")
+                .set("font-size", "2rem")
+                .set("padding", "1rem");
 
         App {
             console: ConsoleService::new(),
-            local_storage: StorageService::new(Area::Local),
             header_style,
+            i: 2,
         }
     }
 
-    fn update(&mut self, _: Self::Message) -> ShouldRender {
-        false
+    fn update(&mut self, msg: Self::Message) -> ShouldRender {
+        match msg {
+            Msg::Inc => {
+                self.i = self.i + 1;
+                if self.i > 5 { self.i = 2 };
+                self.header_style.set("font-size", format!("{}rem", self.i ));
+
+                true
+            }
+        }
     }
 }
 
 impl Renderable<App> for App {
     fn view(&self) -> Html<Self> {
-        let class = format!("{}", &self.header_style);
+        let class = publish_style(&self.header_style);
 
         html! {
             <>
-                <header class=&class,>{ "foo" }</header>
+                <header class=&class, onclick=|_| { Msg::Inc }, >{ "foo" }</header>
             </>
         }
     }

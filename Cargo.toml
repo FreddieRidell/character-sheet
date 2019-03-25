@@ -8,3 +8,4 @@ edition = "2018"
 yew = "*"
 rand = "*"
 stdweb = "*"
+diesel_punk = { path = "../diesel_punk" }
